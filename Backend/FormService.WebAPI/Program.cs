@@ -1,4 +1,7 @@
-using Commons.JWTRevoke;
+ï»¿using Commons.JWTRevoke;
+using FluentValidation;
+using FormService.Infrastructure;
+using FormService.WebAPI.Controllers.Requests;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
@@ -18,12 +21,12 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Êı¾İ¿âÅäÖÃÔ´Zack.AnyDBConfigProvider
+// æ•°æ®åº“é…ç½®æºZack.AnyDBConfigProvider
 builder.WebHost.ConfigureAppConfiguration((hostCtx, configBuilder) =>
 {
     string connStr = Environment.GetEnvironmentVariable("ConnectionStrings:SubgradeQualityForm")!;
     configBuilder.AddDbConfiguration(() => new SqlConnection(connStr), reloadOnChange: true, reloadInterval: TimeSpan.FromSeconds(2));
-    //configBuilder.AddDbConfiguration(() => new SqlConnection(connStr), reloadOnChange: true, reloadInterval: TimeSpan.FromSeconds(2), tableName: "T_Configs_ProductEnv");  // Éú²ú»·¾³
+    //configBuilder.AddDbConfiguration(() => new SqlConnection(connStr), reloadOnChange: true, reloadInterval: TimeSpan.FromSeconds(2), tableName: "T_Configs_ProductEnv");  // ç”Ÿäº§ç¯å¢ƒ
 });
 
 // JWT
@@ -42,17 +45,22 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
     };
 });
 
-// DI·şÎñ×¢²á
+// DIæœåŠ¡æ³¨å†Œ
 builder.Services.AddScoped<IJWTVersionTool, JWTVersionToolForOtherServices>();
+builder.Services.AddScoped<FormRepository>();
 
-// ÅäÖÃÏî
+// é…ç½®é¡¹
 builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
 
-// É¸Ñ¡Æ÷
+// ç­›é€‰å™¨
 builder.Services.Configure<MvcOptions>(options =>
 {
-    options.Filters.Add<JWTVersionCheckFilter>();  // ÅĞ¶ÏJWTÊÇ·ñÊ§Ğ§µÄÉ¸Ñ¡Æ÷
+    options.Filters.Add<JWTVersionCheckFilter>();  // åˆ¤æ–­JWTæ˜¯å¦å¤±æ•ˆçš„ç­›é€‰å™¨
 });
+
+// FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<SubmitRequestValidator>();
+
 
 
 var app = builder.Build();
