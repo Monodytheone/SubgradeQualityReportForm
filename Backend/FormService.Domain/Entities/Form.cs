@@ -8,6 +8,8 @@ public class Form
 {
     public Guid Id { get; init; }
 
+    public DateTime SubmitTime { get; init; }
+
     public string ExpresswayName { get; init; }
 
     /// <summary>
@@ -324,6 +326,7 @@ public class Form
 
             Form form = new()
             {
+                SubmitTime = DateTime.Now,
                 ExpresswayName = _expresswayName,
                 ContractorCompany = _contractorCompany,
                 SupervisionCompany = _supervisionCompany,
