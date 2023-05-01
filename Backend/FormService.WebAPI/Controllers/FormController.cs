@@ -20,13 +20,13 @@ public class FormController : ControllerBase
         _submitValidator = submitValidator;
     }
 
-    [HttpPost]
-    public async Task<ActionResult> Submit(SubmitRequest request)
-    {
-        var validationResult = await _submitValidator.ValidateAsync(request);
-        if (validationResult.IsValid == false)
-        {
-            return BadRequest(validationResult.Errors.Select(error => error.ErrorMessage));
-        }
-    }
+    //[HttpPost]
+    //public async Task<ActionResult> Submit(SubmitRequest request)
+    //{
+    //    var validationResult = await _submitValidator.ValidateAsync(request);
+    //    if (validationResult.IsValid == false)
+    //    {
+    //        return BadRequest(validationResult.Errors.Select(error => error.ErrorMessage));
+    //    }
+    //}
 }

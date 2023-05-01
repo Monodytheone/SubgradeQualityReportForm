@@ -21,9 +21,17 @@ public class FormConfig : IEntityTypeConfiguration<Form>
             .IsUnicode(false);
         builder.Property(form => form.SerialNumber).HasMaxLength(50);
         builder.Property(form => form.StakeNumberAndLocation).HasMaxLength(100);
+        builder.Property(form => form.InspectionDate)
+            .HasConversion(d => d.ToDateTime(TimeOnly.MinValue), d => DateOnly.FromDateTime(d));  // 将DateTime转换为DateTime以映射到数据库
 
         // 值对象：
-        builder.OwnsOne(form => form.ConstructionDate);
+        builder.OwnsOne(form => form.ConstructionDate, navigationBuilder =>
+        {
+            navigationBuilder.Property(constructionDate => constructionDate.StartDate)
+                .HasConversion(d => d.ToDateTime(TimeOnly.MinValue), d => DateOnly.FromDateTime(d));// 将DateTime转换为DateTime以映射到数据库
+            navigationBuilder.Property(constructionDate => constructionDate.EndDate)
+                .HasConversion(d => d.ToDateTime(TimeOnly.MinValue), d => DateOnly.FromDateTime(d));// 将DateTime转换为DateTime以映射到数据库
+        });
         builder.OwnsOne(form => form.ZeroFillingAndCutting_0_0dot80m_, ownedNavigationBuilder =>
         {
             ownedNavigationBuilder.Property(detail => detail.SpecifiedValueAndAllowableDeviation)

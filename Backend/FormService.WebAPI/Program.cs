@@ -5,6 +5,7 @@ using FormService.WebAPI.Controllers.Requests;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
@@ -60,6 +61,13 @@ builder.Services.Configure<MvcOptions>(options =>
 
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<SubmitRequestValidator>();
+
+// DbContext
+builder.Services.AddDbContext<FormDbContext>(optionsBuilder =>
+{
+    string connStr = builder.Configuration.GetConnectionString("SubgradeQualityForm")!;
+    optionsBuilder.UseSqlServer(connStr);
+});
 
 
 
