@@ -1,13 +1,19 @@
+ï»¿using Commons.JWTRevoke;
+using IdentityService.Domain;
 using IdentityService.Domain.Entities;
 using IdentityService.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Zack.JWT;
+using FluentValidation;
+using IdentityService.WebAPI.Controllers.Requests;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,15 +24,15 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// Êı¾İ¿âÅäÖÃÔ´Zack.AnyDBConfigProvider
+// æ•°æ®åº“é…ç½®æºZack.AnyDBConfigProvider
 builder.WebHost.ConfigureAppConfiguration((hostCtx, configBuilder) =>
 {
     string connStr = Environment.GetEnvironmentVariable("ConnectionStrings:SubgradeQualityForm")!;
     configBuilder.AddDbConfiguration(() => new SqlConnection(connStr), reloadOnChange: true, reloadInterval: TimeSpan.FromSeconds(2));
-    //configBuilder.AddDbConfiguration(() => new SqlConnection(connStr), reloadOnChange: true, reloadInterval: TimeSpan.FromSeconds(2), tableName: "T_Configs_ProductEnv");  // Éú²ú»·¾³
+    //configBuilder.AddDbConfiguration(() => new SqlConnection(connStr), reloadOnChange: true, reloadInterval: TimeSpan.FromSeconds(2), tableName: "T_Configs_ProductEnv");  // ç”Ÿäº§ç¯å¢ƒ
 });
 
-// ±êÊ¶¿ò¼Ü
+// æ ‡è¯†æ¡†æ¶
 builder.Services.AddDbContext<IdDbContext>(optionsBuilder =>
 {
     string connStr = builder.Configuration.GetConnectionString("SubgradeQualityForm")!;
@@ -41,7 +47,7 @@ builder.Services.AddIdentityCore<User>(options =>
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
 
-    options.Lockout.MaxFailedAccessAttempts = 5;  // µÇÂ¼Ê§°Ü5´ÎËø¶¨
+    options.Lockout.MaxFailedAccessAttempts = 5;  // ç™»å½•å¤±è´¥5æ¬¡é”å®š
 
     options.Tokens.PasswordResetTokenProvider = TokenOptions.DefaultEmailProvider;
     options.Tokens.EmailConfirmationTokenProvider = TokenOptions.DefaultEmailProvider;
@@ -51,7 +57,7 @@ identityBuilder.AddEntityFrameworkStores<IdDbContext>()
     .AddDefaultTokenProviders()
     .AddUserManager<UserManager<User>>()
     .AddRoleManager<RoleManager<Role>>();
-// ¡ü¡ü¡ü¡ü¡ü¡ü±êÊ¶¿ò¼ÜÅäÖÃ½áÊø¡ü¡ü¡ü¡ü¡ü¡ü
+// â†‘â†‘â†‘â†‘â†‘â†‘æ ‡è¯†æ¡†æ¶é…ç½®ç»“æŸâ†‘â†‘â†‘â†‘â†‘â†‘
 
 // JWT
 JWTOptions jwtOptions = builder.Configuration.GetSection("JWT").Get<JWTOptions>();
@@ -68,6 +74,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
         IssuerSigningKey = secKey,
     };
 });
+
+// DIæœåŠ¡æ³¨å†Œ
+builder.Services.AddScoped<IdentityDomainService>();
+builder.Services.AddScoped<IIdentityRepository, IdentityRepository>();
+builder.Services.AddScoped<IJWTVersionTool, JWTVersionTool>();
+builder.Services.AddScoped<TokenService>();
+
+// é…ç½®é¡¹
+builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));
+
+// ç­›é€‰å™¨
+builder.Services.Configure<MvcOptions>(options =>
+{
+    options.Filters.Add<JWTVersionCheckFilter>();  // åˆ¤æ–­JWTæ˜¯å¦å¤±æ•ˆçš„ç­›é€‰å™¨
+});
+
+// FluentValidation
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
+
 
 var app = builder.Build();
 
