@@ -30,6 +30,6 @@ public class InspectionDetail
         InspectionResult = inspectionResult;
         Code = code;
         //Note = note;
-        Note = note == string.Empty ? null : note;
+        Note = note == string.Empty ? null : note;  // 传来的空串也初始化为null
     }
 }

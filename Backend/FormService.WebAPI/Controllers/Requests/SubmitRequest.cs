@@ -8,7 +8,7 @@ public record SubmitRequest(string ExpresswayName, string ContractorCompany, str
     string ContractNumber, string SerialNumber, SubgradeType SubgradeType, string ProjectName,
     string StakeNumberAndLocation, DateInfo StartDate, DateInfo EndDate, DateInfo InspectionDate,
     List<InspectionDetail> Items, 
-    bool IsQualified, string? UnqualifiedItems, string SupervisorName);
+    bool IsQualified, string? UnqualifiedItems, string SupervisorName, DateInfo SigningDate);
 
 public record DateInfo(int Year, int Month, int Day);
 
@@ -48,5 +48,8 @@ public class SubmitRequestValidator : AbstractValidator<SubmitRequest>
 
         RuleFor(x => x.IsQualified).NotNull();
         RuleFor(x => x.SupervisorName).NotEmpty().MaximumLength(100);
+        RuleFor(x => x.SigningDate.Year).NotEmpty();
+        RuleFor(x => x.SigningDate.Month).NotEmpty();
+        RuleFor(x => x.SigningDate.Day).NotEmpty();
     }
 }

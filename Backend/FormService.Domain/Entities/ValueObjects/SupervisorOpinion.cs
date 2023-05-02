@@ -21,11 +21,11 @@ public class SupervisorOpinion
 
     private SupervisorOpinion() { }
 
-    public SupervisorOpinion(bool isQualified, string? unqualifiedItems, string supervisorName)
+    public SupervisorOpinion(bool isQualified, string? unqualifiedItems, string supervisorName, DateOnly supervisionDate)
     {
         IsQualified = isQualified;
         UnqualifiedItems = unqualifiedItems;
         SupervisorName = supervisorName;
-        SupervisionDate = DateOnly.FromDateTime(DateTime.Now);
+        SupervisionDate = supervisionDate;
     }
 }

@@ -80,11 +80,13 @@ public class FormController : ControllerBase
         Form form;
         if (request.IsQualified)
         {
-            form = formBuilder.Qualify(request.SupervisorName).Build();
+            form = formBuilder.Qualify(request.SupervisorName, request.SigningDate.Year, request.SigningDate.Month, request.SigningDate.Day)
+                .Build();
         }
         else
         {
-            form = formBuilder.Unqualify(request.SupervisorName, request.UnqualifiedItems!).Build();
+            form = formBuilder.Unqualify(request.SupervisorName, request.UnqualifiedItems!, request.SigningDate.Year, request.SigningDate.Month, request.SigningDate.Day)
+                .Build();
         }
 
         _dbContext.Forms.Add(form);

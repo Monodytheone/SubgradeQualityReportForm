@@ -287,15 +287,15 @@ public class Form
         }
 
 
-        public Builder Qualify(string supervisorName)
+        public Builder Qualify(string supervisorName, int year, int month, int day)
         {
-            _supervisorOpinion = new(true, null, supervisorName);
+            _supervisorOpinion = new(true, null, supervisorName, new DateOnly(year, month, day));
             return this;
         }
 
-        public Builder Unqualify(string supervisorName, string unqualifiedItems)
+        public Builder Unqualify(string supervisorName, string unqualifiedItems, int year, int month, int day)
         {
-            _supervisorOpinion = new(false, unqualifiedItems, supervisorName);
+            _supervisorOpinion = new(false, unqualifiedItems, supervisorName, new DateOnly(year, month, day));
             return this;
         }
 
