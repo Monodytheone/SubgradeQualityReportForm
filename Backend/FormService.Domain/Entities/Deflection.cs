@@ -23,10 +23,10 @@ public class Deflection
 
     private Deflection() { }
 
-    public Deflection(Form form, int sequenceInForm, 
-        string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string note)
+    public Deflection(int sequenceInForm, 
+        string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
     {
-        Form = form;
+        //Form = form;
         SequenceInForm = sequenceInForm;
         InspectionDetail = new(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
     }

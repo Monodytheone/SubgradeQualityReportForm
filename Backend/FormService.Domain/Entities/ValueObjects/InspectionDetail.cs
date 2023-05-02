@@ -29,6 +29,7 @@ public class InspectionDetail
         SpecifiedValueAndAllowableDeviation = specifiedValueAndAllowableDeviation;
         InspectionResult = inspectionResult;
         Code = code;
-        Note = note;
+        //Note = note;
+        Note = note == string.Empty ? null : note;
     }
 }
