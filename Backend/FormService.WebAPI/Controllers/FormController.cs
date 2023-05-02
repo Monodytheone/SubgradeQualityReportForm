@@ -4,9 +4,11 @@ using FormService.Domain.Entities;
 using FormService.Domain.Entities.ValueObjects;
 using FormService.Infrastructure;
 using FormService.WebAPI.Controllers.Requests;
+using FormService.WebAPI.Controllers.Responses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace FormService.WebAPI.Controllers;
 
@@ -113,5 +115,43 @@ public class FormController : ControllerBase
         }
 
         return await _repository.PaginatlyGetFormInfosInStatusAsync(isQualified, page, pageSize);
+    }
+
+    [HttpGet("{id}")]
+    [Authorize]
+    public async Task<ActionResult<FormVM>> GetForm(Guid id)
+    {
+        Form? form = await _dbContext.Forms
+            .Include(form => form.Deflections)
+            .AsNoTracking()
+            .FirstAsync(form => form.Id == id);
+        if (form == null)
+        {
+            return NotFound();
+        }
+
+        List<InspectionDetail> rows = new()
+        {
+            form.ZeroFillingAndCutting_0_0dot80m_,
+            form.LightModerateAndHeavy_0_0dot80m_,
+            form.ExtraAndExtremely_0_1dot20m_,
+            form.LightModerateAndHeavy_0dot80_1dot50m_,
+            form.ExtraAndExtremely_1dot20_1dot90m_,
+            form.LightModerateAndHeavy_GreaterThan_1dot50m_,
+            form.ExtraAndExtremely_GreaterThan_1dot90m_,
+        };
+        IEnumerable<InspectionDetail> deflectionDetails = form.Deflections
+            .OrderBy(deflection => deflection.SequenceInForm)
+            .Select(deflection => deflection.InspectionDetail);
+        rows.AddRange(deflectionDetails);
+
+        FormVM formVM = new(form.SubmitTime, form.ExpresswayName, form.ContractorCompany,
+            form.SupervisionCompany, form.ContractNumber, form.SerialNumber, form.SubgradeType, form.ProjectName,
+            form.StakeNumberAndLocation, form.ConstructionDate.StartDate.ToDateInfo(),
+            form.ConstructionDate.EndDate.ToDateInfo(), form.InspectionDate.ToDateInfo(),
+            rows,
+            form.SupervisorOpinion.IsQualified, form.SupervisorOpinion.UnqualifiedItems,
+            form.SupervisorOpinion.SupervisorName, form.SupervisorOpinion.SupervisionDate.ToDateInfo());
+        return formVM;
     }
 }
