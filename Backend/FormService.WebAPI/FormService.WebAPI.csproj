@@ -7,14 +7,19 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.5.2" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
+    <PackageReference Include="Zack.AnyDbConfigProvider" Version="1.1.4" />
+    <PackageReference Include="Zack.jwt" Version="1.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
+    <Folder Include="Controllers\Responses\" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Commons\Commons.csproj" />
     <ProjectReference Include="..\FormService.Domain\FormService.Domain.csproj" />
     <ProjectReference Include="..\FormService.Infrastructure\FormService.Infrastructure.csproj" />
   </ItemGroup>
