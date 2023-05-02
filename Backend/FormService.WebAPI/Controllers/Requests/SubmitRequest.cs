@@ -7,7 +7,8 @@ namespace FormService.WebAPI.Controllers.Requests;
 public record SubmitRequest(string ExpresswayName, string ContractorCompany, string SupervisionCompany,
     string ContractNumber, string SerialNumber, SubgradeType SubgradeType, string ProjectName,
     string StakeNumberAndLocation, DateInfo StartDate, DateInfo EndDate, DateInfo InspectionDate,
-    List<InspectionDetail> Items);
+    List<InspectionDetail> Items, 
+    bool IsQualified, string? UnqualifiedItems, string SupervisorName);
 
 public record DateInfo(int Year, int Month, int Day);
 
@@ -39,9 +40,13 @@ public class SubmitRequestValidator : AbstractValidator<SubmitRequest>
         RuleFor(x => x.InspectionDate.Month).NotEmpty();
         RuleFor(x => x.InspectionDate.Month).NotEmpty();
 
+        RuleFor(x => x.Items).Must(x => x.Count >= 8).WithMessage("1Δ部分每一行都为必填，且至少要有一个弯沉");
         RuleForEach(x => x.Items)
             .Must(item => item.SpecifiedValueAndAllowableDeviation.Length >= 0 && item.SpecifiedValueAndAllowableDeviation.Length <= 100)
             .Must(item => item.InspectionResult.Length >= 0 && item.InspectionResult.Length <= 100)
             .Must(item => item.Code.Length >= 0 && item.Code.Length <= 500);
+
+        RuleFor(x => x.IsQualified).NotNull();
+        RuleFor(x => x.SupervisorName).NotEmpty().MaximumLength(100);
     }
 }

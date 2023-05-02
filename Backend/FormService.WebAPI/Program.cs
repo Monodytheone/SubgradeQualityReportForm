@@ -49,6 +49,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 // DI服务注册
 builder.Services.AddScoped<IJWTVersionTool, JWTVersionToolForOtherServices>();
 builder.Services.AddScoped<FormRepository>();
+builder.Services.AddHttpClient();  // 为了将IHttpClientFactory注入进JWTVersionToolForOtherServices
+
 
 // 配置项
 builder.Services.Configure<JWTOptions>(builder.Configuration.GetSection("JWT"));

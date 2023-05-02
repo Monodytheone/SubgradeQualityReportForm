@@ -112,6 +112,12 @@ public class Form
     public List<Deflection> Deflections { get; init; }
 
 
+    /// <summary>
+    /// 监理意见（值对象）
+    /// </summary>
+    public SupervisorOpinion SupervisorOpinion { get; init; }
+
+
 
     private Form() { }
 
@@ -142,6 +148,8 @@ public class Form
         private InspectionDetail _row6;
 
         private List<Deflection> _deflections;
+
+        private SupervisorOpinion _supervisorOpinion;
 
 
         public Builder ExpresswayName(string value)
@@ -200,10 +208,19 @@ public class Form
             return this;
         }
 
-
+        public Builder Row0__ZeroFillingAndCutting_0_0dot80m(InspectionDetail detail)
+        {
+           _row0 = detail;
+            return this;
+        }
         public Builder Row0__ZeroFillingAndCutting_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
         {
             _row0 = new InspectionDetail(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
+            return this;
+        }
+        public Builder Row1__LightModerateAndHeavy_0_0dot80m(InspectionDetail detail)
+        {
+            _row1 = detail;
             return this;
         }
         public Builder Row1__LightModerateAndHeavy_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
@@ -211,9 +228,19 @@ public class Form
             _row1 = new InspectionDetail(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
             return this;
         }
+        public Builder Row2__LightModerateAndHeavy_0_0dot80m(InspectionDetail detail)
+        {
+            _row2 = detail;
+            return this;
+        }
         public Builder Row2__LightModerateAndHeavy_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
         {
             _row2 = new InspectionDetail(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
+            return this;
+        }
+        public Builder Row3__LightModerateAndHeavy_0_0dot80m(InspectionDetail detail)
+        {
+            _row3 = detail;
             return this;
         }
         public Builder Row3__LightModerateAndHeavy_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
@@ -221,14 +248,29 @@ public class Form
             _row3 = new InspectionDetail(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
             return this;
         }
+        public Builder Row4__LightModerateAndHeavy_0_0dot80m(InspectionDetail detail)
+        {
+            _row4 = detail;
+            return this;
+        }
         public Builder Row4__LightModerateAndHeavy_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
         {
             _row4 = new InspectionDetail(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
             return this;
         }
+        public Builder Row5__LightModerateAndHeavy_0_0dot80m(InspectionDetail detail)
+        {
+            _row5 = detail;
+            return this;
+        }
         public Builder Row5__LightModerateAndHeavy_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
         {
             _row5 = new InspectionDetail(specifiedValueAndAllowableDeviation, inspectionResult, code, note);
+            return this;
+        }
+        public Builder Row6__LightModerateAndHeavy_0_0dot80m(InspectionDetail detail)
+        {
+            _row6 = detail;
             return this;
         }
         public Builder Row6__LightModerateAndHeavy_0_0dot80m(string specifiedValueAndAllowableDeviation, string inspectionResult, string code, string? note)
@@ -241,6 +283,19 @@ public class Form
         public Builder Deflections(List<Deflection> deflections)
         {
             _deflections = deflections;
+            return this;
+        }
+
+
+        public Builder Qualify(string supervisorName)
+        {
+            _supervisorOpinion = new(true, null, supervisorName);
+            return this;
+        }
+
+        public Builder Unqualify(string supervisorName, string unqualifiedItems)
+        {
+            _supervisorOpinion = new(false, unqualifiedItems, supervisorName);
             return this;
         }
 
@@ -323,6 +378,10 @@ public class Form
             {
                 throw new ArgumentOutOfRangeException(nameof(_deflections));
             }
+            if (_supervisorOpinion == null)
+            {
+                throw new ArgumentOutOfRangeException(nameof(_supervisorOpinion));
+            }
 
             Form form = new()
             {
@@ -345,6 +404,7 @@ public class Form
                 LightModerateAndHeavy_GreaterThan_1dot50m_ = _row5,
                 ExtraAndExtremely_GreaterThan_1dot90m_ = _row6,
                 Deflections = _deflections,
+                SupervisorOpinion = _supervisorOpinion,
             };
             return form;
         }

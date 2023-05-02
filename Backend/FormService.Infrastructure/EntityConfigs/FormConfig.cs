@@ -82,6 +82,20 @@ public class FormConfig : IEntityTypeConfiguration<Form>
             ownedNavigationBuilder.Property(detail => detail.Code).HasMaxLength(500);
         });  // 6
 
-        // 与弯沉一对多关系配置放在弯沉实体类的配置类里
+        // 与弯沉的一对多关系配置放在弯沉实体类的配置类里
+
+        builder.OwnsOne(form => form.SupervisorOpinion, ownedBuilder =>
+        {
+            ownedBuilder.Property(opinion => opinion.SupervisionDate)
+                .HasConversion(dateonly => dateonly.ToDateTime(TimeOnly.MinValue),
+                    dateTime => DateOnly.FromDateTime(dateTime));
+            ownedBuilder.Property(opinion => opinion.SupervisorName).HasMaxLength(100);  // 万一是外国人名字老长呢，所以给个nvarchar(100)吧
+            ownedBuilder.Property(opinion => opinion.IsQualified)
+                .HasConversion(isQualified => isQualified ? "Qualified" : "Unqualified",
+                    str => str == "Qualified")  // 将bool属性IsQualified映射为字符串字段
+                .IsUnicode(false)
+                .HasMaxLength(11);
+            ownedBuilder.Property(opinion => opinion.UnqualifiedItems).HasMaxLength(500);
+        });
     }
 }
