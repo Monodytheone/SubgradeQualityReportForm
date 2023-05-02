@@ -4,6 +4,7 @@ using FormService.Domain.Entities;
 using FormService.Domain.Entities.ValueObjects;
 using FormService.Infrastructure;
 using FormService.WebAPI.Controllers.Requests;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 
@@ -92,5 +93,25 @@ public class FormController : ControllerBase
         _dbContext.Forms.Add(form);
         await _dbContext.SaveChangesAsync();
         return Ok();
+    }
+
+
+    /// <summary>
+    /// 分页地获取合格/不合格的表单的简略信息
+    /// </summary>
+    [HttpGet("isQualified/{isQualified}/page/{page}")]
+    [Authorize]
+    public async Task<ActionResult<List<FormInfo>>> PaginatlyGetFormInfosInStatus(bool isQualified, int page, int pageSize)
+    {
+        if (page < 1)
+        {
+            return BadRequest("页码不得小于1");
+        }
+        if (pageSize < 3)
+        {
+            return BadRequest("一页至少3个");
+        }
+
+        return await _repository.PaginatlyGetFormInfosInStatusAsync(isQualified, page, pageSize);
     }
 }

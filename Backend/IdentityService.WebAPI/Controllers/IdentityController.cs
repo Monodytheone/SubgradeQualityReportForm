@@ -52,6 +52,7 @@ public class IdentityController : ControllerBase
     }
 
     [HttpGet]
+    [NotCheckJWT]
     public Task<long> GetServerJWTVersion(string userId)
     {
         return _repository.GetJWTVersionAsync(userId);
