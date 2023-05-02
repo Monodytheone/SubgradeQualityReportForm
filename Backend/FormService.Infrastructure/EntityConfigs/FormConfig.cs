@@ -10,6 +10,7 @@ public class FormConfig : IEntityTypeConfiguration<Form>
     {
         builder.ToTable("T_Forms");
         builder.HasKey(form => form.Id).IsClustered(false);
+        builder.HasIndex(form => form.SubmitTime).IsClustered(true);  // 将提交时间设为聚集索引，因为有大量的按时间顺序查询的需求
         builder.Property(form => form.ExpresswayName).HasMaxLength(50);  // 约定就是nvarchar，不用专门配置
         builder.Property(form => form.ContractorCompany).HasMaxLength(50);
         builder.Property(form => form.SupervisionCompany).HasMaxLength(50);
