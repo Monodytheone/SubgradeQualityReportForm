@@ -9,5 +9,5 @@ export default interface InspectionDetail {
     Code: string;
     
     /** 备注（可空） */
-    Note?: string;
+    Note: string;
 }

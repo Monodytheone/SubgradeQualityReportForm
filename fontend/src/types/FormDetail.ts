@@ -16,7 +16,7 @@ export default interface FormDetail {
     InspectionDate?: DateInfo;
     Items: InspectionDetail[];
     IsQualified?: boolean;
-    UnqualifiedItems?: string;
+    UnqualifiedItems: string;
     SupervisorName: string;
     SigningDate?: DateInfo;
 }
