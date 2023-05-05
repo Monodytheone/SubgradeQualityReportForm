@@ -1,8 +1,93 @@
 <template>
-    <h1>登录页面</h1>
+    <div v-title data-title="登录"></div>
+    <div id="displayRange">
+        <a-form :model="formState" name="basic" :label-col="{ span: 8 }" :wrapper-col="{ span: 16 }" autocomplete="off"
+            @finish="onFinish" @finishFailed="onFinishFailed">
+            <a-form-item label="用户名" name="username" :rules="[{ required: true, message: '请输入用户名' }]">
+                <a-input v-model:value="formState.username" autofocus />
+            </a-form-item>
+
+            <a-form-item label="密码" name="password" :rules="[{ required: true, message: '请输入密码' }]">
+                <a-input-password v-model:value="formState.password" />
+            </a-form-item>
+
+            <a id="githubLink" :href="githubLink" target="_blank">前往项目GitHub主页，获取试用管理员账号</a>
+
+            <a-form-item id="buttons" :wrapper-col="{ offset: 8, span: 16 }">
+                <a-button id="notLogInTempButton" href="/" type="default" html-type="submit">暂不登录</a-button>
+                <a-button type="primary" html-type="submit" :loading="uploading">{{ uploading ? '登录中' : '登录' }}</a-button>
+            </a-form-item>
+        </a-form>
+    </div>
 </template>
 <script lang="ts">
-import { defineComponent } from 'vue';
+import { defineComponent, reactive, ref, onMounted, onBeforeMount, getCurrentInstance } from 'vue';
+import { postLogin } from '@/apis/login';
+import showErrorModal from '@/commons/showErrorModal';
+import showModalAndJump from '@/commons/showModalAndJump';
+
+interface FormState {
+    username: string;
+    password: string;
+}
 export default defineComponent({
-})
+    setup() {
+        const githubLink = process.env.VUE_APP_GITHUB_LINK
+        const formState = reactive<FormState>({
+            username: '',
+            password: '',
+        });
+        const uploading = ref(false)
+        const onFinish = (values: any) => {
+            uploading.value = true
+            postLogin(formState.username, formState.password)
+                .then((response: any) => {
+                    localStorage.setItem("jwt", response.data);
+                    showModalAndJump(true, '/list', '登录成功', '已提交表单列表', '确定')
+                })
+                .catch((error: any) => {
+                    showErrorModal(error.response.data)  // 弹出失败提示框
+                    uploading.value = false
+                })
+        };
+
+        const onFinishFailed = (errorInfo: any) => {
+            console.log('Failed:', errorInfo);
+        };
+        return {
+            githubLink,
+            formState,
+            uploading,
+            onFinish,
+            onFinishFailed,
+        };
+    },
+});
 </script>
+<style scoped>
+#displayRange {
+    margin: auto;
+    margin-top: 100px;
+    margin-right: 40%;
+    width: 350px;
+}
+
+.routerRow {
+    position: relative;
+    left: 50px;
+}
+
+#notLogInTempButton {
+    margin-right: 10px;
+}
+
+#githubLink {
+    padding-left: 60px;
+}
+
+#buttons {
+    margin-top: 30px;
+}
+</style>
+  
+  

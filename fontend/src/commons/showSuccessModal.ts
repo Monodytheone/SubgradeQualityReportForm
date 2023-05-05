@@ -5,9 +5,9 @@ import { Modal } from 'ant-design-vue';
 export default function (message: string) {
     let secondsToGo = 5;
     let hasJumped: boolean = false  // 是否已经跳转过页面了
-    const modal = Modal.warning({
+    const modal = Modal.success({
         title: message,
-        content: `${secondsToGo} 秒后跳转至登录页`,
+        content: `${secondsToGo} 秒后关闭`,
         okText: '确定',
         onOk: function () {
             location.reload()
@@ -17,7 +17,7 @@ export default function (message: string) {
     const interval = setInterval(() => {
         secondsToGo -= 1;
         modal.update({
-            content: `${secondsToGo} 秒后跳转至登录页`,
+            content: `${secondsToGo} 秒后关闭`,
         });
     }, 1000);
     setTimeout(() => {

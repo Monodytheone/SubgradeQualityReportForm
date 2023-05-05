@@ -1,5 +1,8 @@
 <template>
     <div v-title data-title="表单填写" />
+    <a-affix :offset-top="30">
+        <a-button type="primary" @click="jumpToFormList">查看已提交表单</a-button>
+    </a-affix>
     <div class="background">
         <div class="white-background">
             <div style="padding-top: 50px;" />
@@ -207,8 +210,9 @@
 
                 </a-form>
 
-                <a-button id="button-submit" type="primary" size="large" :loading="submitButtonIsLoading" @click="handleSubmit">{{
-                    submitButtonIsLoading ? "提交中" : "提交表单" }}</a-button>
+                <a-button id="button-submit" type="primary" size="large" :loading="submitButtonIsLoading"
+                    @click="handleSubmit">{{
+                        submitButtonIsLoading ? "提交中" : "提交表单" }}</a-button>
             </div>
             <div style="padding-top: 500px" />
         </div>
@@ -227,6 +231,7 @@ import { message } from 'ant-design-vue';
 import submit from '@/apis/submit';
 import showErrorModal from '@/commons/showErrorModal';
 import showSuccessModalAndReload from '@/commons/showSuccessModal';
+import router from '@/router';
 dayjs.locale('zh-cn');
 type RangeValue = [Dayjs, Dayjs];
 export default defineComponent({
@@ -465,8 +470,12 @@ export default defineComponent({
                         showErrorModal(`提交失败：${error.response.data}`)
                         submitButtonIsLoading.value = false
                     })
-                    
+
             }
+        }
+
+        const jumpToFormList = () => {
+            router.push('/list');
         }
 
         return {
@@ -481,7 +490,8 @@ export default defineComponent({
             submitButtonIsLoading,
             addDeflection,
             deleteDeflection,
-            handleSubmit
+            handleSubmit,
+            jumpToFormList
         }
     }
 })

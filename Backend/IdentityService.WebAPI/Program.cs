@@ -93,6 +93,10 @@ builder.Services.Configure<MvcOptions>(options =>
 // FluentValidation
 builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
+// 跨域
+var urls = new string[] { builder.Configuration.GetSection("CORSUrl").Value! };
+builder.Services.AddCors(options => options.AddDefaultPolicy(builder => builder.WithOrigins(urls).AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()));
+
 
 var app = builder.Build();
 
@@ -102,6 +106,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseCors();
 
 app.UseHttpsRedirection();
 

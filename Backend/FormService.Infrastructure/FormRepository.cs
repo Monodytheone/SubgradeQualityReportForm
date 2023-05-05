@@ -19,7 +19,7 @@ public class FormRepository
             .Where(form => form.SupervisorOpinion.IsQualified == isQualified)
             .OrderByDescending(form => form.SubmitTime)
             .Skip(skip).Take(pageSize)
-            .Select(form => new FormInfo(form.Id, form.ProjectName, isQualified, form.SubmitTime))  // 只查需要的列
+            .Select(form => new FormInfo(form.Id, form.ProjectName, isQualified, form.SubmitTime, form.SupervisorOpinion.SupervisorName))  // 只查需要的列
             .ToListAsync();
     }
 }
