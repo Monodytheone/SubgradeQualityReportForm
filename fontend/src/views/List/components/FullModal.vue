@@ -161,11 +161,13 @@
 import { defineComponent, ref } from 'vue';
 import getForm from '@/apis/getForm';
 import SubgradeType from '@/types/SubgradeType';
+import showModalAndJump from '@/commons/showModalAndJump';
 import FormDetail from '@/types/FormDetail';
 import { reactive } from 'vue';
+import showErrorModal from '@/commons/showErrorModal';
 export default defineComponent({
     setup(props, { expose }) {
-        const formDetail = ref({
+        const emptyDetail = {
             expresswayName: '',
             contractorCompany: '',
             supervisionCompany: '',
@@ -249,7 +251,8 @@ export default defineComponent({
                 day: 0
             },
 
-        })
+        };
+        const formDetail = ref(emptyDetail)
 
 
 
@@ -257,13 +260,20 @@ export default defineComponent({
         const visible = ref<boolean>(false);
         const showModal = (formId: string) => {
             visible.value = true;
+            formDetail.value = emptyDetail
             getForm(formId)
                 .then(response => {
                     formDetail.value = response.data
                     console.log(formDetail)
                 })
                 .catch(error => {
-
+                    if(error.response.status == 401) {
+                        showModalAndJump(false, '/loginPage', "必须登录才能查看表单详情", "登录页面", "去登录");
+                    }
+                    else {
+                        showErrorModal('请求数据失败')
+                    }
+                    visible.value = false
                 })
         };
         const handleOk = (e: MouseEvent) => {

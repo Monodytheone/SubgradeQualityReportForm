@@ -51,10 +51,6 @@ type APIResult = {
   }[];
 };
 
-const queryData = (params: APIParams) => {
-  return axios.get<APIResult>(`https://localhost:7233/api/Form/PaginatlyGetFormInfosInStatus/isQualified/true`, { params });
-};
-
 export default defineComponent({
   components: {
     FullModal
