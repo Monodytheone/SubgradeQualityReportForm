@@ -97,12 +97,12 @@ public class FormController : ControllerBase
         return Ok();
     }
 
-
-    /// <summary>
+    // <summary>
     /// 分页地获取合格/不合格的表单的简略信息
     /// </summary>
-    [HttpGet("isQualified/{isQualified}/page/{page}")]
-    [Authorize]
+    [HttpGet("isQualified/{isQualified}")]
+    //[Authorize]
+    [NotCheckJWT]
     public async Task<ActionResult<List<FormInfo>>> PaginatlyGetFormInfosInStatus(bool isQualified, int page, int pageSize)
     {
         if (page < 1)
