@@ -63,7 +63,7 @@ export default defineComponent({
   },
   setup(props) {
     const queryData = (params: APIParams) => {
-      return axios.get<APIResult>(`https://localhost:7233/api/Form/PaginatlyGetFormInfosInStatus/isQualified/${props.status}`, { params });
+      return axios.get<APIResult>(`${process.env.VUE_APP_FORMSERVICE_URL}/api/Form/PaginatlyGetFormInfosInStatus/isQualified/${props.status}`, { params });
     };
     const {
       data: dataSource,
